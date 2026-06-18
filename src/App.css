@@ -17,3 +17,37 @@ body{
   grid-template-columns: 250px 1fr;
   min-height: 100vh;
 }
+
+/* --- SIDEBAR --- */
+.sidebar{
+  background-color: #111c44;
+  color: white;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.logo h2{
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.sidebar-nav ul{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+sidebar-nav li{
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-weight: 500;
+}
+
+.sidebar-nav li:hover, .sidebar-nav li.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
