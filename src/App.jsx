@@ -28,6 +28,25 @@ function App() {
         <div className="user-profile">Gennaro B.</div>
       </header>
     </main>
+
+       {/* GRIGLIA DELLE STATISTICHE (Saldo, Entrate, Uscite) */}
+    <section className="stats-container">
+      <div className="stat-card balance">
+        <h3>Saldo Totale</h3>
+        <p className="amount">€ 0.00</p>
+      </div>
+      <div className="stat-card income">
+            <h3>Entrate Mese</h3>
+            <p className="amount">€ 0.00</p>
+          </div>
+          <div className="stat-card expense">
+            <h3>Uscite Mese</h3>
+            <p className="amount">€ 0.00</p>
+          </div>
+    </section>
+
+       {/* GRIGLIA INFERIORE (Grafici e Tabella) */}
+    
    </div>
   )
 }
