@@ -46,7 +46,17 @@ function App() {
     </section>
 
        {/* GRIGLIA INFERIORE (Grafici e Tabella) */}
-    
+    <section className="data-container">
+      <div className="chat-area">
+        <h3>Analisi Spesa</h3>
+        <div className="placeholder-box">Il grafico CSS andrà qui</div>
+      </div>
+
+      <div className="table-area">
+        <h3>Ultime Transazioni</h3>
+        <div className="placeholder-box">La tabella React andrà qui</div>
+      </div>
+      </section>    
    </div>
   )
 }
