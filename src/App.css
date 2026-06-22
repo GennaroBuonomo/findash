@@ -400,3 +400,31 @@ body {
 .btn-submit:hover {
   background-color: #04b083;
 }
+
+/* --- STILI PULSANTE ELIMINA --- */
+.action-cell {
+  text-align: right;
+  width: 40px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #a3aed1;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  color: #ee5d50; /* Diventa rosso al passaggio del mouse */
+  background-color: rgba(238, 93, 80, 0.1); /* Sfondo rosso tenue */
+  transform: scale(1.1);
+}

@@ -7,41 +7,41 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
 
-  // --- STATO DELLA MODALE E DEL FORM ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
     type: 'expense',
     category: 'Alimentari',
-    date: new Date().toISOString().split('T')[0] // Imposta la data di oggi di default
+    date: new Date().toISOString().split('T')[0]
   });
 
-  // Gestione dell'invio del form
   const handleAddTransaction = (e) => {
-    e.preventDefault(); // Evita il ricaricamento della pagina
-    
+    e.preventDefault();
     const newTransaction = {
-      id: Date.now(), // genero un id 
+      id: Date.now(),
       description: formData.description,
-      amount: parseFloat(formData.amount), // Mi assicuro che sia un numero e non una stringa
+      amount: parseFloat(formData.amount),
       type: formData.type,
       category: formData.category,
       date: formData.date
     };
-
-    
     setTransactions([newTransaction, ...transactions]);
-    
-    // Chiudiamo la modale e resettiamo il form
     setIsModalOpen(false);
     setFormData({ description: '', amount: '', type: 'expense', category: 'Alimentari', date: new Date().toISOString().split('T')[0] });
   };
-  // ------------------------------------
+
+  // --- ELIMINA TRANSAZIONE ---
+  const handleDeleteTransaction = (idToRemove) => {
+    // Filtriamo l'array tenendo solo gli elementi che NON hanno quell'ID
+    const updatedTransactions = transactions.filter(t => t.id !== idToRemove);
+    setTransactions(updatedTransactions);
+  };
+  // ------------------------------------------
 
   const filteredTransactions = transactions.filter(t => {
     const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      t.category.toLowerCase().includes(searchTerm.toLowerCase());
+    t.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || t.type === filterType;
     return matchesSearch && matchesType;
   });
@@ -105,7 +105,6 @@ function App() {
         <header className="top-header">
           <h1>Panoramica Portafoglio</h1>
           <div className="header-actions">
-            {/* Pulsante per aprire la modale */}
             <button className="btn-add" onClick={() => setIsModalOpen(true)}>
               + Nuova Transazione
             </button>
@@ -180,6 +179,7 @@ function App() {
                     <th>Descrizione</th>
                     <th>Categoria</th>
                     <th>Importo</th>
+                    <th></th> {/* Cella vuota per la colonna della X */}
                   </tr>
                 </thead>
                 <tbody>
@@ -192,11 +192,21 @@ function App() {
                         <td className={`amount-cell ${t.type}`}>
                           {t.type === 'income' ? '+' : '-'}{formatMoney(t.amount)}
                         </td>
+                        {/* Nuova cella con il pulsante X */}
+                        <td className="action-cell">
+                          <button 
+                            className="delete-btn" 
+                            onClick={() => handleDeleteTransaction(t.id)}
+                            title="Elimina"
+                          >
+                            ✕
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" style={{textAlign: 'center', padding: '2rem'}}>Nessuna transazione trovata</td>
+                      <td colSpan="5" style={{textAlign: 'center', padding: '2rem'}}>Nessuna transazione trovata</td>
                     </tr>
                   )}
                 </tbody>
@@ -206,13 +216,12 @@ function App() {
         </section>
       </main>
 
-      {/* --- FINESTRA MODALE (Visibile solo se isModalOpen è true) --- */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Aggiungi Transazione</h2>
-              <button className="close-btn" onClick={() => setIsModalOpen(false)}>x</button>
+              <button className="close-btn" onClick={() => setIsModalOpen(false)}>×</button>
             </div>
             
             <form onSubmit={handleAddTransaction} className="transaction-form">
