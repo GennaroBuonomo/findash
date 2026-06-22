@@ -135,3 +135,87 @@ body {
   color: #a3aed1;
   font-style: italic;
 }
+
+/* --- STILI TABELLA TRANSAZIONI --- */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.transactions-table th {
+  color: #a3aed1;
+  font-weight: 600;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f4f7fe;
+}
+
+.transactions-table td {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f4f7fe;
+  color: #2b3674;
+  font-weight: 500;
+}
+
+/* Badge smussato per le categorie */
+.badge {
+  background-color: #f4f7fe;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #2b3674;
+  font-weight: 600;
+}
+
+/* Colori dinamici per gli importi nella tabella */
+.amount-cell.income {
+  color: #05cd99; /* Verde entrate */
+  font-weight: bold;
+}
+
+.amount-cell.expense {
+  color: #ee5d50; /* Rosso uscite */
+  font-weight: bold;
+}
+
+/* --- STILI BARRA FILTRI --- */
+.table-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.search-input, .type-select {
+  padding: 0.6rem 1rem;
+  border: 1px solid #e0e5f2;
+  border-radius: 10px;
+  background-color: #f4f7fe;
+  color: #2b3674;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus, .type-select:focus {
+  border-color: #2b3674;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(43, 54, 116, 0.1);
+}
+
+.search-input {
+  width: 250px;
+}
