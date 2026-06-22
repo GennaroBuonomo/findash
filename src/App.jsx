@@ -4,24 +4,48 @@ import './App.css';
 
 function App() {
   const [transactions, setTransactions] = useState(mockTransactions);
-  
-  // --- NUOVI STATI PER I FILTRI ---
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all'); // 'all', 'income', o 'expense'
+  const [filterType, setFilterType] = useState('all');
 
-  // Creiamo un nuovo array che contiene solo le transazioni che superano i nostri test
+  // --- STATO DELLA MODALE E DEL FORM ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    description: '',
+    amount: '',
+    type: 'expense',
+    category: 'Alimentari',
+    date: new Date().toISOString().split('T')[0] // Imposta la data di oggi di default
+  });
+
+  // Gestione dell'invio del form
+  const handleAddTransaction = (e) => {
+    e.preventDefault(); // Evita il ricaricamento della pagina
+    
+    const newTransaction = {
+      id: Date.now(), // genero un id 
+      description: formData.description,
+      amount: parseFloat(formData.amount), // Mi assicuro che sia un numero e non una stringa
+      type: formData.type,
+      category: formData.category,
+      date: formData.date
+    };
+
+    
+    setTransactions([newTransaction, ...transactions]);
+    
+    // Chiudiamo la modale e resettiamo il form
+    setIsModalOpen(false);
+    setFormData({ description: '', amount: '', type: 'expense', category: 'Alimentari', date: new Date().toISOString().split('T')[0] });
+  };
+  // ------------------------------------
+
   const filteredTransactions = transactions.filter(t => {
-    // Controllo Ricerca: il testo coincide con la descrizione o la categoria?
-    const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     t.category.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Controllo Tipo: è tutto, o combacia con entrate/uscite?
+    const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      t.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || t.type === filterType;
-    
     return matchesSearch && matchesType;
   });
 
-  // Ora calcoliamo i totali basandoci su 'filteredTransactions', non su 'transactions' totali!
   const totalIncome = filteredTransactions
     .filter(t => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0);
@@ -31,6 +55,32 @@ function App() {
     .reduce((acc, curr) => acc + curr.amount, 0);
 
   const balance = totalIncome - totalExpense;
+
+  const expensesByCategory = filteredTransactions
+    .filter(t => t.type === 'expense')
+    .reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+      return acc;
+    }, {});
+
+  const colors = ['#ee5d50', '#f39c12', '#3498db', '#9b59b6', '#1abc9c', '#e74c3c'];
+  const chartData = Object.keys(expensesByCategory).map((category, index) => ({
+    category,
+    amount: expensesByCategory[category],
+    color: colors[index % colors.length]
+  }));
+
+  let accumulatedPercentage = 0;
+  const gradientStops = chartData.map(item => {
+    const percentage = (item.amount / totalExpense) * 100;
+    const start = accumulatedPercentage;
+    accumulatedPercentage += percentage;
+    return `${item.color} ${start}% ${accumulatedPercentage}%`;
+  });
+  
+  const conicGradientString = gradientStops.length > 0 
+    ? `conic-gradient(${gradientStops.join(', ')})`
+    : 'none';
 
   const formatMoney = (amount) => {
     return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(amount);
@@ -54,7 +104,13 @@ function App() {
       <main className="main-content">
         <header className="top-header">
           <h1>Panoramica Portafoglio</h1>
-          <div className="user-profile">Gennaro B.</div>
+          <div className="header-actions">
+            {/* Pulsante per aprire la modale */}
+            <button className="btn-add" onClick={() => setIsModalOpen(true)}>
+              + Nuova Transazione
+            </button>
+            <div className="user-profile">Gennaro B.</div>
+          </div>
         </header>
 
         <section className="stats-container">
@@ -75,14 +131,27 @@ function App() {
         <section className="data-container">
           <div className="chart-area">
             <h3>Analisi Spese</h3>
-            <div className="placeholder-box">Il grafico CSS andrà qui</div>
+            {totalExpense > 0 ? (
+              <div className="chart-wrapper">
+                <div className="pie-chart" style={{ background: conicGradientString }}></div>
+                <ul className="chart-legend">
+                  {chartData.map(item => (
+                    <li key={item.category}>
+                      <span className="legend-color" style={{ backgroundColor: item.color }}></span>
+                      <span className="legend-text">{item.category}</span>
+                      <span className="legend-value">{((item.amount / totalExpense) * 100).toFixed(0)}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="placeholder-box">Nessuna uscita da analizzare.</div>
+            )}
           </div>
           
           <div className="table-area">
             <div className="table-header-flex">
               <h3>Ultime Transazioni</h3>
-              
-              {/* --- NUOVA BARRA DEI FILTRI --- */}
               <div className="filters">
                 <input 
                   type="text" 
@@ -114,7 +183,6 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Usiamo l'array filtrato al posto di quello originale! */}
                   {filteredTransactions.length > 0 ? (
                     filteredTransactions.map((t) => (
                       <tr key={t.id}>
@@ -137,6 +205,83 @@ function App() {
           </div>
         </section>
       </main>
+
+      {/* --- FINESTRA MODALE (Visibile solo se isModalOpen è true) --- */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Aggiungi Transazione</h2>
+              <button className="close-btn" onClick={() => setIsModalOpen(false)}>x</button>
+            </div>
+            
+            <form onSubmit={handleAddTransaction} className="transaction-form">
+              <div className="form-group">
+                <label>Descrizione</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Es. Spesa Conad"
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Importo (€)</label>
+                  <input 
+                    type="number" 
+                    step="0.01" 
+                    min="0.01" 
+                    required 
+                    value={formData.amount}
+                    onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Data</label>
+                  <input 
+                    type="date" 
+                    required 
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tipo</label>
+                  <select 
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                  >
+                    <option value="expense">Uscita</option>
+                    <option value="income">Entrata</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Categoria</label>
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  >
+                    <option value="Alimentari">Alimentari</option>
+                    <option value="Lavoro">Lavoro</option>
+                    <option value="Svago">Svago</option>
+                    <option value="Trasporti">Trasporti</option>
+                    <option value="Utenze">Utenze</option>
+                    <option value="Extra">Extra</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="btn-submit">Salva Transazione</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

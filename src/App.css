@@ -219,3 +219,184 @@ body {
 .search-input {
   width: 250px;
 }
+
+/* --- STILI PIE CHART CSS PURO --- */
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.pie-chart {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%; /* Questo trasforma il quadrato in un cerchio! */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.pie-chart:hover {
+  transform: scale(1.05);
+}
+
+.chart-legend {
+  list-style: none;
+  width: 100%;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  color: #2b3674;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.legend-text {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.legend-value {
+  font-weight: bold;
+  color: #a3aed1;
+}
+
+/* --- STILI HEADER ACTIONS --- */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.btn-add {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+.btn-add:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* --- STILI MODALE E FORM --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 28, 68, 0.5); /* Sfondo blu scuro in trasparenza */
+  backdrop-filter: blur(4px); /* Effetto sfocato di classe */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  color: #2b3674;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #a3aed1;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #ee5d50;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: #2b3674;
+  font-weight: 600;
+}
+
+.form-group input, .form-group select {
+  padding: 0.8rem;
+  border: 1px solid #e0e5f2;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: #3498db;
+}
+
+.btn-submit {
+  background-color: #05cd99;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+  background-color: #04b083;
+}
